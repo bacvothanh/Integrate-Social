@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -96,7 +97,26 @@ namespace Social.Web.Controllers
         [HttpPost]
         public ActionResult Post(PostFeedModel model)
         {
-            PostMessage(model.Message,model.Link);
+            if (model.File != null)
+            {
+                var bytes = GetByteArrayFromFile(model.File);
+                var client = new FacebookClient(CurrentUser.AccessToken);
+                client.Post("me/photos", new
+                {
+                    message = model.Message,
+                    file = new FacebookMediaObject
+                    {
+                        ContentType = model.File.ContentType,
+                        FileName = model.File.FileName,
+                    }
+                        .SetValue(bytes)
+                });
+            }
+            else
+            {
+                PostMessage(model.Message, model.Link);
+            }
+
             return RedirectToAction("Index");
         }
 
@@ -107,6 +127,18 @@ namespace Social.Web.Controllers
             {
                 message
             });
+        }
+
+        private byte[] GetByteArrayFromFile(HttpPostedFileBase file)
+        {
+            if (file == null || file.ContentLength == 0)
+            {
+                return null;
+            }
+
+            var memoryStream = new MemoryStream();
+            file.InputStream.CopyTo(memoryStream);
+            return memoryStream.ToArray();
         }
     }
 }

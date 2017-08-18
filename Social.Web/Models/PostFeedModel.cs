@@ -31,5 +31,7 @@ namespace Social.Web.Models
         /// Facebook ID for an existing picture in the person's photo albums to use as the thumbnail image. They must be the owner of the photo, and the photo cannot be part of a message attachment.
         /// </summary>
         public string ObjectAttachment { get; set; }
+
+        public HttpPostedFileBase File { get; set; }
     }
 }
