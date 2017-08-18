@@ -8,7 +8,10 @@ using Social.Web.Models;
 
 namespace Social.Web.Controllers
 {
-    public class HomeController : Controller
+    /// <summary>
+    /// Implement Facebook SDK
+    /// </summary>
+    public class HomeController : BaseController
     {
         private const string AppId = "1781593175413135";
         private const string AppSecret = "81da237deb99915fb6e2432148b98174";
@@ -39,7 +42,6 @@ namespace Social.Web.Controllers
             return fb.GetLoginUrl(parameters);
         }
 
-        public string Domain => HttpContext?.Request?.Url?.GetLeftPart(UriPartial.Authority);
 
         [HttpGet]
         public ActionResult LoginSuccess()
